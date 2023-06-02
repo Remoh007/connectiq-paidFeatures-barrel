@@ -1,0 +1,2 @@
+module PaidFeatures Barrel {
+}
