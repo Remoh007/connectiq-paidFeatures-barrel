@@ -1,0 +1,9 @@
+<resources>
+    <menus>
+        <menu id="BasicInfoMenu" title="@PaidFeatures.Strings.PaidFeatureInfoViewTitle">
+            <menu-item id="deviceID" label="@PaidFeatures.Strings.PaidFeatureDeviceID"/>
+            <menu-item id="currentCode" label="@PaidFeatures.Strings.PaidFeatureCurrentCode"/>
+            <menu-item id="email" label="@PaidFeatures.Strings.PaidFeatureEmail_title"/>
+        </menu>
+    </menus>
+</resources>

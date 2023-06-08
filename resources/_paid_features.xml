@@ -1,0 +1,25 @@
+<resources>
+    <properties>
+        <property id="PaidFeatureUnlockCode" type="string"></property>
+        <property id="PaidFeatureEmail" type="string"></property>
+    </properties>
+    <strings>
+        <!-- STRINGS FOR THE SETTINGS -->
+        <string id="PaidFeature_title">Paid Features</string>
+        <string id="PaidFeature_description">Here is the place to unlock paid features</string>
+        <string id="PaidFeatureUnlockCode_title">Unlock Code</string>
+        <string id="PaidFeatureUnlockCode_prompt">Please enter the code to unlock additional features</string>
+        <string id="PaidFeatureEmail_title">Email Address</string>
+        <string id="PaidFeatureEmail_prompt">Please enter your email address</string>
+    </strings>
+    <settings>
+        <group id="PaidFeature" title="@Strings.PaidFeature_title" description="@Strings.PaidFeature_description">
+            <setting propertyKey="@Properties.PaidFeatureUnlockCode" title="@Strings.PaidFeatureUnlockCode_title" prompt="@Strings.PaidFeatureUnlockCode_prompt">
+                <settingConfig type="alphaNumeric" required="false"></settingConfig>
+            </setting>
+            <setting propertyKey="@Properties.PaidFeatureEmail" title="@Strings.PaidFeatureEmail_title" prompt="@Strings.PaidFeatureEmail_prompt">
+                <settingConfig type="email" required="false"></settingConfig>
+            </setting>
+        </group>
+    </settings>
+</resources>

@@ -1,0 +1,8 @@
+<resources>
+    <strings>
+        <!-- STRINGS FOR THE VIEW -->
+        <string id="PaidFeatureInfoViewTitle">Device Infos</string>
+        <string id="PaidFeatureDeviceID">Device ID</string>
+        <string id="PaidFeatureCurrentCode">Current Code</string>
+    </strings>
+</resources>
