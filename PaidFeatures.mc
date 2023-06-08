@@ -126,7 +126,7 @@ module PaidFeatures {
         public function isUnlocked(featureName as String) as Boolean {
             for (var i=0; i<features.size(); i++) {
                 var feature = (features as Array<Feature>)[i];
-                if (feature.name.toString().hashCode() == featureName.toString().hashCode()) {
+                if (feature.name.equals(featureName)) {
                     return feature.unlocked;
                 }
             }
@@ -205,13 +205,22 @@ module PaidFeatures {
         public function verify(code as String) as Boolean {
             // Check for a CODE_TYPE.GLOBAL
             if (type == CODE_TYPE.GLOBAL) {
-                // Just comparing the phrase's hashCode with the code's hashCode
-                return code.hashCode() == phrase.hashCode();
+                // Just comparing the phrase with the code
+                return code.equals(phrase);
             }
 
             if (type == CODE_TYPE.DEVICE) {
-                // compares the generatedDeviceCode's hashCode with the code's hashCode
-                return code.hashCode() == generateDeviceCode({}).hashCode();
+                // compares the generatedDeviceCode with the code
+                return code.equals(generateDeviceCode({}));
+            }
+
+            if (type == CODE_TYPE.EMAIL) {
+                // if there is no email set in the settings it returns always false
+                if (PaidFeatures.getEmail().equals("")) {
+                    return false;
+                }
+                // compares the generatedEmailCode with the code
+                return code.equals(generateEmailCode({}));
             }
             return false;
         }
@@ -222,14 +231,28 @@ module PaidFeatures {
         //! @param :publicCode the Code phrase used when creating the Code object
         //! returns The String that needs to be entered in the settings to unlock the Feature/Code
         public function generateDeviceCode(options as {:uniqueIdentifier as String, :publicCode as String}) as String {
-        var uniqueIdentifier = options.get(:uniqueIdentifier) != null ? options.get(:uniqueIdentifier) : uniqueDeviceIdentifier();
-        var publicCode = options.get(:publicCode) != null ? options.get(:publicCode) : phrase;
-        var hash_id = uniqueIdentifier.hashCode();
-        var hash_publicCode = publicCode.hashCode();
+            var uniqueIdentifier = options.get(:uniqueIdentifier) != null ? options.get(:uniqueIdentifier) : uniqueDeviceIdentifier();
+            var publicCode = options.get(:publicCode) != null ? options.get(:publicCode) : phrase;
+            var hash_id = uniqueIdentifier.hashCode();
+            var hash_publicCode = publicCode.hashCode();
 
-        var value = (hash_id * hash_publicCode).abs();
-        return value.toString();
-    }
+            var value = (hash_id * hash_publicCode).abs();
+            return value.toString();
+        }
+        //! Generates an unlock code for an email bounded Code
+        //! options
+        //! @param :email the email address for this user
+        //! @param :publicCode the Code phrase used when creating the Code object
+        //! returns The String that needs to be entered in the settings to unlock the Feature/Code
+        public function generateEmailCode(options as {:email as String, :publicCode as String}) as String {
+            var email = options.get(:email) != null ? options.get(:email) : getEmail();
+            var publicCode = options.get(:publicCode) != null ? options.get(:publicCode) : phrase;
+            var hash_email = email.hashCode();
+            var hash_publicCode = publicCode.hashCode();
+
+            var value = (hash_email * hash_publicCode).abs();
+            return value.toString();
+        }
     }
 
     //! ENUM Class for the type of Code
