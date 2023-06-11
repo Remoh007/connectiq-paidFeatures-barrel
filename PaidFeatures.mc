@@ -2,11 +2,16 @@ import Toybox.Lang;
 import Toybox.Application;
 import Toybox.System;
 
+//! Module, helping you to loc and unlock specific features in your ConnectIQ App
+//! Unlock Codes can be used by everone, or be device or email specific.
 module PaidFeatures {
 
     //! Returns the generated unique device identifier
     public function uniqueDeviceIdentifier() as String {
-        return System.getDeviceSettings().uniqueIdentifier.substring(0, 8);
+        if (System.DeviceSettings has :uniqueIdentifier) {
+            return System.getDeviceSettings().uniqueIdentifier.substring(0, 8);
+        }
+        return System.getDeviceSettings().partNumber.substring(0, 8);
     }
 
     //! Returns the current email from the settings
@@ -35,20 +40,33 @@ module PaidFeatures {
         return currentSettingsCode;
     }
 
+    //! Returns the array of unlock codes stored on the device
+    public function getStoredUnlockCodes() as Array<String> {
+        var codes = Storage.getValue("PaidFeatureUnlockCodes") as Array<String>;
+        if ( codes == null) {
+            return [];
+        }
+        return codes;
+    }
+
     //! Checks if a feature is unlocked and returns true if it is unlocked
     //! Notice: the Manager needs to be defined as featureManager in the AppBase as public var
+    //!         If not it will return always false!
     //! @param featureName name of the feature
     public function isUnlocked(featureName as String) as Boolean {
-        var manager = Application.getApp().featureManager;
-        for (var i=0; i<manager.features.size(); i++) {
-            var feature = (manager.features as Array<Feature>)[i];
-            if (feature.name.toString().hashCode() == featureName.toString().hashCode()) {
-                return feature.unlocked;
+        var appBase = Application.getApp();
+        if (appBase has :featureManager) {
+            var manager = appBase.featureManager as Manager;
+
+            for (var i=0; i<manager.features.size(); i++) {
+                var feature = (manager.features as Array<Feature>)[i];
+                if (feature.name.toString().hashCode() == featureName.toString().hashCode()) {
+                    return feature.unlocked;
+                }
             }
         }
         return false;
     }
-
 
     //! Manages the Features and their locked status
     class Manager extends Object {
@@ -90,15 +108,6 @@ module PaidFeatures {
             }
         }
 
-        //! Returns the array of unlock codes stored on the device
-        private function getStoredUnlockCodes() as Array<String> {
-            var codes = Storage.getValue("PaidFeatureUnlockCodes") as Array<String>;
-            if ( codes == null) {
-                return [];
-            }
-            return codes;
-        }
-
 
         //! Adds the code to the storage unlockCodes but avoids duplicates
         //! @param code the code to be added
@@ -110,7 +119,7 @@ module PaidFeatures {
             }
             var storedUnlockCodes = getStoredUnlockCodes();
 
-             // That code is already in the storage => just return here and do nothing
+            // That code is already in the storage! => just return here and do nothing
             if (storedUnlockCodes.indexOf(code) != -1) {
                 return false;
             }
@@ -144,8 +153,6 @@ module PaidFeatures {
                 (features as Array<Feature>)[i].lock();
             }
         }
-
-
     }
 
     //! Defines a Feature with it's unlocking code
@@ -261,8 +268,5 @@ module PaidFeatures {
         const DEVICE = 2; // Using the Device's id to generate a String to unlock the feature => the code is tied to the device
         const EMAIL = 3; // Using the Email to generate a String to unlock the feature => the code is tied to this email
     }
-
-
-    
 
 }
