@@ -1,4 +1,4 @@
-# ConmnectIQ PaidFeatures Barrel
+# ConnectIQ PaidFeatures Barrel
 PaidFeatures is a Monkey C Barrel assisting you in managing unlockable features in a connectIQ project
 
 | API     | Purpose                                                        |
