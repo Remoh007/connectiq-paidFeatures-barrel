@@ -15,6 +15,9 @@ You can define three types of Features.
 | DEVICE    | The Code is bound to a device. The Device Code needs to be provided to generate a Code           |
 | EMAIL     | The Code is bound to an email address. The email address needs to be provided to generate a Code |
 
+## Feedback
+If you have any questions or ideas, please do not hesitate to contact me.
+
 ## Adding PaidFeatures to Your Project
 See general instructions for [including Monkey Barrels](https://developer.garmin.com/connect-iq/core-topics/shareable-libraries/#shareablelibraries).
 
