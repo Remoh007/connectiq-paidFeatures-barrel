@@ -4,6 +4,7 @@ import Toybox.System;
 
 //! Module, helping you to loc and unlock specific features in your ConnectIQ App
 //! Unlock Codes can be used by everone, or be device or email specific.
+(:background)
 module PaidFeatures {
 
     //! Returns the generated unique device identifier
