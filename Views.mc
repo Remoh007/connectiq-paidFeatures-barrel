@@ -3,7 +3,7 @@ import Toybox.Lang;
 import Toybox.Graphics;
 
 module PaidFeatures {
-        class BasicInfoMenuDelegate extends WatchUi.MenuInputDelegate {
+    class BasicInfoMenuDelegate extends WatchUi.MenuInputDelegate {
         public function initialize() {
             WatchUi.MenuInputDelegate.initialize();
         }

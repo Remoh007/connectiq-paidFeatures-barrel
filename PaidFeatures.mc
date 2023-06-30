@@ -265,9 +265,9 @@ module PaidFeatures {
 
     //! ENUM Class for the type of Code
     class CODE_TYPE {
-        const GLOBAL = 1; // Using the Code's phrase directly to unlock the feature
-        const DEVICE = 2; // Using the Device's id to generate a String to unlock the feature => the code is tied to the device
-        const EMAIL = 3; // Using the Email to generate a String to unlock the feature => the code is tied to this email
+        static const GLOBAL = 1; // Using the Code's phrase directly to unlock the feature
+        static const DEVICE = 2; // Using the Device's id to generate a String to unlock the feature => the code is tied to the device
+        static const EMAIL = 3; // Using the Email to generate a String to unlock the feature => the code is tied to this email
     }
 
 }
