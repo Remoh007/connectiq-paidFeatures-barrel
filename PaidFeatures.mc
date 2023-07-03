@@ -154,6 +154,39 @@ module PaidFeatures {
                 (features as Array<Feature>)[i].lock();
             }
         }
+
+        //! Locks a feature, that was unlocked before
+        //! Returns true for successfully locking a feature, otherwise false
+        public function lockFeature(featureName as String) as Boolean {
+            // Get the feature
+            var featureIndex = null;
+            for (var i=0; i<features.size(); i++) {
+                var feature = (features as Array<Feature>)[i];
+                if (feature.name.equals(featureName)) {
+                    featureIndex = i;
+                    break;
+                }
+            }
+            if (featureIndex == null) {
+                return false;
+            }
+            // Get its code
+            var code = (features as Array<Feature>)[featureIndex].code.getUnlockCode();
+
+            // remove the code from the storage
+            var storedUnlockCodes = PaidFeatures.getStoredUnlockCodes();
+            storedUnlockCodes.remove(code);
+            Application.Storage.setValue("PaidFeatureUnlockCodes", storedUnlockCodes);
+
+            // remove the code from the settings if it is there
+            if (code.equals(PaidFeatures.getCurrentUnlockCode())) {
+                Application.Properties.setValue("PaidFeatureUnlockCode", "");
+            }
+
+            // lock it with the feature method lock
+            (features as Array<Feature>)[featureIndex].lock();
+            return true;
+        }
     }
 
     //! Defines a Feature with it's unlocking code
@@ -211,26 +244,31 @@ module PaidFeatures {
         //! @param code the code string to check
         //! returns true if the code was valid
         public function verify(code as String) as Boolean {
+            return code.equals(getUnlockCode());
+        }
+
+        public function getUnlockCode() as String? {
             // Check for a CODE_TYPE.GLOBAL
             if (type == CODE_TYPE.GLOBAL) {
-                // Just comparing the phrase with the code
-                return code.equals(phrase);
+                return phrase;
             }
 
+            // Check for a CODE_TYPE.DEVICE
             if (type == CODE_TYPE.DEVICE) {
                 // compares the generatedDeviceCode with the code
-                return code.equals(generateDeviceCode({}));
+                return generateDeviceCode({});
             }
 
+            // Check for a CODE_TYPE.EMAIL
             if (type == CODE_TYPE.EMAIL) {
                 // if there is no email set in the settings it returns always false
                 if (PaidFeatures.getEmail().equals("")) {
-                    return false;
+                    return null;
                 }
                 // compares the generatedEmailCode with the code
-                return code.equals(generateEmailCode({}));
+                return generateEmailCode({});
             }
-            return false;
+            return null;
         }
 
         //! Generates an unlock code for a device bounded Code
